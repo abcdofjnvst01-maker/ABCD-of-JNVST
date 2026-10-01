@@ -1,0 +1,58 @@
+export const APP_CONFIG = {
+  name: "ABCD of JNVST",
+  tagline: "Class 6 Navodaya Vidyalaya Entrance Exam Preparation",
+  description:
+    "Dedicated, structured, and affordable ₹500 preparation platform for Jawahar Navodaya Vidyalaya Selection Test (JNVST) Class 6 aspirants.",
+  targetCapacity: 500,
+  defaultTargetYear: 2027,
+  subscriptionPriceINR: Number(process.env.SUBSCRIPTION_PRICE_INR) || 500,
+  defaultSubscriptionDurationDays:
+    Number(process.env.DEFAULT_SUBSCRIPTION_DURATION_DAYS) || 365,
+  contactEmail: "support@abcdjnvst.in",
+};
+
+export const INDIAN_STATES_AND_UTS = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  "Andaman and Nicobar Islands",
+  "Chandigarh",
+  "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi",
+  "Jammu and Kashmir",
+  "Ladakh",
+  "Lakshadweep",
+  "Puducherry",
+] as const;
+
+export const GUARDIAN_RELATIONSHIPS = [
+  { value: "parent", label: "Parent (Father / Mother)" },
+  { value: "guardian", label: "Legal Guardian" },
+  { value: "teacher", label: "School Teacher / Mentor" },
+  { value: "other", label: "Other" },
+] as const;
