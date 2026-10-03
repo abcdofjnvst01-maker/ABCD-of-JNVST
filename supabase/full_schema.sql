@@ -853,3 +853,14 @@ VALUES
     ('10000000-0000-0000-0000-000000000010', '20000000-0000-0000-0000-000000000004', 'arithmetic', 42, 1.25),
     ('10000000-0000-0000-0000-000000000010', '20000000-0000-0000-0000-000000000005', 'language', 61, 1.25)
 ON CONFLICT DO NOTHING;
+-- Migration: 20261004000001_fix_guardian_fk.sql
+-- Description: Drop strict auth.users FK constraints so demo accounts and mock environments can register students seamlessly
+
+ALTER TABLE IF EXISTS public.guardian_student_links 
+  DROP CONSTRAINT IF EXISTS guardian_student_links_guardian_id_fkey;
+
+ALTER TABLE IF EXISTS public.guardian_profiles 
+  DROP CONSTRAINT IF EXISTS guardian_profiles_id_fkey;
+
+ALTER TABLE IF EXISTS public.application_roles
+  DROP CONSTRAINT IF EXISTS application_roles_user_id_fkey;
