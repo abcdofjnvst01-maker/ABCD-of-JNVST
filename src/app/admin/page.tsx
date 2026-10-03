@@ -1,10 +1,20 @@
+import Link from "next/link";
 import { requireAdmin } from "@/server/authorization";
 import { AdminService } from "@/server/services/AdminService";
 import { AdminStudentTable } from "@/features/admin/components/AdminStudentTable";
 import { AuditLogViewer } from "@/features/admin/components/AuditLogViewer";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { ShieldAlert, Users, Award, GraduationCap, Activity, Layers } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import {
+  ShieldAlert,
+  Users,
+  Award,
+  GraduationCap,
+  Activity,
+  Layers,
+  BookOpen,
+} from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -36,6 +46,14 @@ export default async function AdminDashboardPage() {
             Managing cohort capacity, student enrollments, ₹500 subscription plans, and
             security audit logs.
           </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Link href="/admin/questions">
+            <Button variant="primary" size="sm" className="gap-1.5 shadow-sm">
+              <BookOpen className="h-4 w-4" /> Manage Question Bank
+            </Button>
+          </Link>
         </div>
       </div>
 

@@ -47,13 +47,21 @@ export async function Header() {
           ) : (
             <div className="flex items-center gap-3">
               {user.role === "admin" ? (
-                <Link
-                  href="/admin"
-                  className="flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-900 transition-colors hover:bg-amber-100"
-                >
-                  <Shield className="h-3.5 w-3.5 text-amber-700" />
-                  Admin Console
-                </Link>
+                <>
+                  <Link
+                    href="/admin/questions"
+                    className="flex items-center gap-1.5 rounded-md border border-teal-300 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-900 transition-colors hover:bg-teal-100"
+                  >
+                    Question Bank
+                  </Link>
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-900 transition-colors hover:bg-amber-100"
+                  >
+                    <Shield className="h-3.5 w-3.5 text-amber-700" />
+                    Admin Console
+                  </Link>
+                </>
               ) : null}
 
               <Link

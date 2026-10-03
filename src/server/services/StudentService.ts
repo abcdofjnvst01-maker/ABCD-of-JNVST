@@ -23,7 +23,10 @@ export class StudentService {
         .eq("guardian_id", guardianId);
 
       if (linkError) {
-        console.error("[StudentService] Error fetching student links:", linkError.message);
+        console.error(
+          "[StudentService] Error fetching student links:",
+          linkError.message
+        );
         return [];
       }
 
@@ -46,7 +49,10 @@ export class StudentService {
         .is("archived_at", null);
 
       if (studentError) {
-        console.error("[StudentService] Error fetching student profiles:", studentError.message);
+        console.error(
+          "[StudentService] Error fetching student profiles:",
+          studentError.message
+        );
         return [];
       }
 
@@ -62,7 +68,10 @@ export class StudentService {
         .eq("status", "active");
 
       if (entError) {
-        console.error("[StudentService] Error fetching student entitlements:", entError.message);
+        console.error(
+          "[StudentService] Error fetching student entitlements:",
+          entError.message
+        );
       }
 
       const typedEntitlements = (entitlements as StudentEntitlementRecord[]) || [];
@@ -78,7 +87,10 @@ export class StudentService {
         };
       });
     } catch (err: any) {
-      console.error("[StudentService] getStudentsForGuardian failed:", err?.message || err);
+      console.error(
+        "[StudentService] getStudentsForGuardian failed:",
+        err?.message || err
+      );
       return [];
     }
   }
@@ -149,9 +161,9 @@ export class StudentService {
         };
       }
 
-      const { error: lError } = await (supabase.from("guardian_student_links") as any).insert(
-        linkRecord
-      );
+      const { error: lError } = await (
+        supabase.from("guardian_student_links") as any
+      ).insert(linkRecord);
       if (lError) {
         return {
           success: false,

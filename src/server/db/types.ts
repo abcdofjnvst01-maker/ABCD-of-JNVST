@@ -6,6 +6,31 @@ export type EntitlementStatus = "active" | "expired" | "cancelled" | "pending";
 
 export type Gender = "male" | "female" | "other";
 
+export type ExamSection = "mental_ability" | "arithmetic" | "language";
+
+export type DifficultyLevel = "easy" | "medium" | "hard";
+
+export type OptionKey = "A" | "B" | "C" | "D";
+
+export type MATCategory =
+  | "odd_man_out"
+  | "figure_matching"
+  | "pattern_completion"
+  | "figure_series_completion"
+  | "analogy"
+  | "geometrical_figure_completion"
+  | "mirror_imaging"
+  | "punched_hole_pattern"
+  | "space_visualization"
+  | "embedded_figure";
+
+export interface QuestionOption {
+  key: OptionKey;
+  text_en?: string;
+  text_hi?: string;
+  image_url?: string | null;
+}
+
 export type Json =
   string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
@@ -84,6 +109,41 @@ export interface AuditLogRecord {
   created_at: string;
 }
 
+export interface PassageRecord {
+  id: string;
+  title_en: string | null;
+  title_hi: string | null;
+  content_en: string | null;
+  content_hi: string | null;
+  language_code: "en" | "hi" | "both";
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QuestionRecord {
+  id: string;
+  passage_id: string | null;
+  section: ExamSection;
+  topic: string;
+  mat_category: MATCategory | null;
+  difficulty: DifficultyLevel;
+  is_pyq: boolean;
+  pyq_year: number | null;
+  marks: number;
+  negative_marks: number;
+  question_text_en: string | null;
+  question_text_hi: string | null;
+  question_image_url: string | null;
+  options: QuestionOption[];
+  correct_option: OptionKey;
+  explanation_en: string | null;
+  explanation_hi: string | null;
+  explanation_image_url: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -151,6 +211,26 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<AuditLogRecord>;
+        Relationships: [];
+      };
+      passages: {
+        Row: PassageRecord;
+        Insert: Omit<PassageRecord, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<PassageRecord>;
+        Relationships: [];
+      };
+      questions: {
+        Row: QuestionRecord;
+        Insert: Omit<QuestionRecord, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<QuestionRecord>;
         Relationships: [];
       };
     };

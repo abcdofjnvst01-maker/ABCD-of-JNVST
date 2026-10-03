@@ -118,9 +118,7 @@ export class AdminService {
         const guardian = link
           ? typedGuardians.find((g) => g.id === link.guardian_id) || null
           : null;
-        const hasActiveEntitlement = typedEntitlements.some(
-          (e) => e.student_id === s.id
-        );
+        const hasActiveEntitlement = typedEntitlements.some((e) => e.student_id === s.id);
 
         return {
           student: s,
