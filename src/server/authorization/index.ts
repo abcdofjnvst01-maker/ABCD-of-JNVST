@@ -20,13 +20,19 @@ export async function getCurrentUser(): Promise<AuthenticatedUser | null> {
       try {
         const parsed = JSON.parse(decodeURIComponent(devSessionCookie));
         const safeRole: ApplicationRole = parsed.role === "admin" ? "admin" : "guardian";
+        const hexUuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        const validId = hexUuidRegex.test(parsed.id)
+          ? parsed.id
+          : safeRole === "admin"
+          ? "99999999-9999-9999-9999-999999999999"
+          : "11111111-1111-1111-1111-111111111111";
 
         return {
-          id: parsed.id,
+          id: validId,
           email: parsed.email,
           role: safeRole,
           profile: {
-            id: parsed.id,
+            id: validId,
             full_name: parsed.name || "Dev User",
             email: parsed.email,
             phone_number: parsed.phone || null,
