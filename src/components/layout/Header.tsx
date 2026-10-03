@@ -30,6 +30,13 @@ export async function Header() {
 
         {/* Navigation & User actions */}
         <nav className="flex items-center gap-3 sm:gap-4">
+          <Link
+            href="/tests"
+            className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold text-teal-800 bg-teal-50 hover:bg-teal-100 transition-colors sm:text-sm"
+          >
+            Mock Tests (टेस्ट)
+          </Link>
+
           {!user ? (
             <>
               <Link

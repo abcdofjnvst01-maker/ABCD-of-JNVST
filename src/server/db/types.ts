@@ -139,9 +139,82 @@ export interface QuestionRecord {
   explanation_en: string | null;
   explanation_hi: string | null;
   explanation_image_url: string | null;
+  passage?: PassageRecord | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export type ExamType = "full_mock" | "sectional" | "topic_drill";
+export type TestStatus = "in_progress" | "completed" | "abandoned" | "timed_out";
+
+export interface MockTestRecord {
+  id: string;
+  title: string;
+  description: string | null;
+  exam_type: ExamType;
+  section: ExamSection | null;
+  duration_minutes: number;
+  total_questions: number;
+  total_marks: number;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MockTestQuestionRecord {
+  id: string;
+  test_id: string;
+  question_id: string;
+  section: ExamSection;
+  order_index: number;
+  marks: number;
+  created_at: string;
+  // Joined relation fields
+  question?: QuestionRecord;
+}
+
+export interface SectionScoreBreakdown {
+  score: number;
+  total_marks: number;
+  questions_count: number;
+  correct_count: number;
+  incorrect_count: number;
+  unattempted_count: number;
+}
+
+export interface TestAttemptRecord {
+  id: string;
+  student_id: string;
+  test_id: string;
+  status: TestStatus;
+  started_at: string;
+  completed_at: string | null;
+  score: number;
+  total_marks: number;
+  accuracy_percentage: number;
+  time_spent_seconds: number;
+  section_scores: Record<ExamSection, SectionScoreBreakdown>;
+  created_at: string;
+  updated_at: string;
+  // Joined relations
+  student?: StudentProfileRecord;
+  test?: MockTestRecord;
+}
+
+export interface TestResponseRecord {
+  id: string;
+  attempt_id: string;
+  question_id: string;
+  selected_option: OptionKey | null;
+  is_marked_for_review: boolean;
+  is_correct: boolean | null;
+  marks_awarded: number;
+  time_spent_seconds: number;
+  created_at: string;
+  updated_at: string;
+  // Joined relation
+  question?: QuestionRecord;
 }
 
 export interface Database {
@@ -231,6 +304,45 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<QuestionRecord>;
+        Relationships: [];
+      };
+      mock_tests: {
+        Row: MockTestRecord;
+        Insert: Omit<MockTestRecord, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<MockTestRecord>;
+        Relationships: [];
+      };
+      mock_test_questions: {
+        Row: MockTestQuestionRecord;
+        Insert: Omit<MockTestQuestionRecord, "id" | "created_at"> & {
+          id?: string;
+          created_at?: string;
+        };
+        Update: Partial<MockTestQuestionRecord>;
+        Relationships: [];
+      };
+      test_attempts: {
+        Row: TestAttemptRecord;
+        Insert: Omit<TestAttemptRecord, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<TestAttemptRecord>;
+        Relationships: [];
+      };
+      test_responses: {
+        Row: TestResponseRecord;
+        Insert: Omit<TestResponseRecord, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<TestResponseRecord>;
         Relationships: [];
       };
     };

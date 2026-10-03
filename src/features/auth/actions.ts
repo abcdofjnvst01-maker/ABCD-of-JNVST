@@ -292,7 +292,7 @@ export async function devSwitchUserRole(role: "admin" | "guardian"): Promise<voi
   const cookieStore = await cookies();
 
   if (role === "admin") {
-    const adminId = process.env.DEV_ADMIN_ID || "a0000000-0000-0000-0000-000000000001";
+    const adminId = process.env.DEV_ADMIN_ID || "99999999-9999-9999-9999-999999999999";
     cookieStore.set(
       "dev_auth_session",
       encodeURIComponent(
@@ -308,7 +308,7 @@ export async function devSwitchUserRole(role: "admin" | "guardian"): Promise<voi
     );
   } else {
     const guardianId =
-      process.env.DEV_GUARDIAN_ID || "g0000000-0000-0000-0000-000000000001";
+      process.env.DEV_GUARDIAN_ID || "11111111-1111-1111-1111-111111111111";
     cookieStore.set(
       "dev_auth_session",
       encodeURIComponent(

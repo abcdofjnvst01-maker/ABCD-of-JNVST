@@ -9,6 +9,7 @@ const envSchema = z.object({
     .min(1, "NEXT_PUBLIC_SUPABASE_ANON_KEY is required"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  DATABASE_URL: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
 });
 
@@ -21,6 +22,7 @@ function validateEnv(): Env {
       process.env.NEXT_PUBLIC_SUPABASE_URL || "https://mock-jnvst-project.supabase.co",
     NEXT_PUBLIC_SUPABASE_ANON_KEY:
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "dummy-anon-key-development",
+    DATABASE_URL: process.env.DATABASE_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
     NODE_ENV:
       (process.env.NODE_ENV as "development" | "test" | "production") || "development",
