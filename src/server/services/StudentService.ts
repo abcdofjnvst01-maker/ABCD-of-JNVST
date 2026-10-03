@@ -151,6 +151,28 @@ export class StudentService {
 
     try {
       const supabase = await createServerSupabaseClient();
+
+      // Ensure guardian profile exists
+      const { data: existingProf } = await supabase
+        .from("guardian_profiles")
+        .select("id")
+        .eq("id", params.guardianId)
+        .maybeSingle();
+
+      if (!existingProf) {
+        await (supabase.from("guardian_profiles") as any).upsert(
+          {
+            id: params.guardianId,
+            full_name: "Guardian",
+            email: "guardian@example.com",
+            state: params.input.state,
+            created_at: now,
+            updated_at: now,
+          },
+          { onConflict: "id" }
+        );
+      }
+
       const { error: sError } = await (supabase.from("student_profiles") as any).insert(
         studentRecord
       );
