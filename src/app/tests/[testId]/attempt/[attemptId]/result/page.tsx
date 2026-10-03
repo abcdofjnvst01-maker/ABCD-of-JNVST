@@ -1,6 +1,6 @@
 import React from "react";
-import { notFound, redirect } from "next/navigation";
-import { createServerSupabaseClient } from "@/server/auth/server";
+import { notFound } from "next/navigation";
+import { requireUser } from "@/server/authorization";
 import { MockTestService } from "@/server/services/MockTestService";
 import { TestScorecard } from "@/features/tests/components/TestScorecard";
 
@@ -10,14 +10,7 @@ interface ResultPageProps {
 
 export default async function TestResultPage({ params }: ResultPageProps) {
   const { testId, attemptId } = await params;
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect(`/signin?redirect=/tests/${testId}/attempt/${attemptId}/result`);
-  }
+  await requireUser();
 
   const attempt = await MockTestService.getAttemptById(attemptId);
   const testQuestions = await MockTestService.getMockTestQuestions(testId);

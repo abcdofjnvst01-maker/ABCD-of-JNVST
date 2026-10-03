@@ -2,30 +2,15 @@ import React from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Award, BookOpen, Clock, Sparkles, PlusCircle } from "lucide-react";
-import { createServerSupabaseClient } from "@/server/auth/server";
+import { requireUser } from "@/server/authorization";
 import { MockTestService } from "@/server/services/MockTestService";
 import { StudentService } from "@/server/services/StudentService";
 import { TestCard } from "@/features/tests/components/TestCard";
 import { Button } from "@/components/ui/Button";
 
 export default async function TestsDiscoveryPage() {
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/signin?redirect=/tests");
-  }
-
-  // Get user role
-  const { data: roleData } = await supabase
-    .from("application_roles")
-    .select("role")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  const isAdmin = (roleData as any)?.role === "admin";
+  const user = await requireUser();
+  const isAdmin = user.role === "admin";
 
   // Fetch tests
   const tests = await MockTestService.getMockTests({

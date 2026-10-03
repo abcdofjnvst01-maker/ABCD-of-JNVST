@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { createServerSupabaseClient } from "@/server/auth/server";
+import { getCurrentUser } from "@/server/authorization";
 import { MockTestService } from "@/server/services/MockTestService";
 import type { OptionKey, ExamType, ExamSection } from "@/server/db/types";
 
@@ -19,10 +19,7 @@ export async function startTestAttemptAction(
   const headerStore = await headers();
   const ipAddress = headerStore.get("x-forwarded-for") || headerStore.get("x-real-ip");
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const res = await MockTestService.startAttempt(studentId, testId, user?.id, ipAddress);
   if (!res.success || !res.attemptId) {
@@ -54,10 +51,7 @@ export async function submitTestAttemptAction(
   const headerStore = await headers();
   const ipAddress = headerStore.get("x-forwarded-for") || headerStore.get("x-real-ip");
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const res = await MockTestService.submitAttempt(
     attemptId,
@@ -91,10 +85,7 @@ export async function createMockTestAction(input: {
   const headerStore = await headers();
   const ipAddress = headerStore.get("x-forwarded-for") || headerStore.get("x-real-ip");
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const res = await MockTestService.createMockTest(input, user?.id, ipAddress);
   if (!res.success || !res.testId) {
