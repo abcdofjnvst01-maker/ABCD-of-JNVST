@@ -1,4 +1,4 @@
-export type ApplicationRole = "admin" | "guardian";
+export type ApplicationRole = "admin" | "student" | "guardian";
 
 export type GuardianRelationship = "parent" | "guardian" | "teacher" | "other";
 
@@ -54,14 +54,16 @@ export interface GuardianProfileRecord {
 export interface StudentProfileRecord {
   id: string;
   full_name: string;
-  date_of_birth: string;
-  district: string;
-  state: string;
-  gender: Gender | null;
-  target_exam_year: number;
+  email?: string;
+  phone_number?: string | null;
+  date_of_birth?: string | null;
+  district?: string | null;
+  state?: string | null;
+  gender?: Gender | null;
+  target_exam_year?: number | null;
   created_at: string;
   updated_at: string;
-  archived_at: string | null;
+  archived_at?: string | null;
 }
 
 export interface GuardianStudentLinkRecord {

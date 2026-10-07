@@ -8,7 +8,7 @@ import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { INDIAN_STATES_AND_UTS } from "@/lib/constants";
-import { UserPlus, ShieldCheck } from "lucide-react";
+import { UserPlus, Sparkles } from "lucide-react";
 
 export function SignUpForm() {
   const [state, formAction, isPending] = useActionState(signUpAction, null);
@@ -24,55 +24,55 @@ export function SignUpForm() {
   return (
     <div className="space-y-6">
       {state && !state.success && state.error && (
-        <Alert variant="error" title="Sign Up Error">
+        <Alert variant="error" title="Registration Error">
           {state.error}
         </Alert>
       )}
 
       <div className="flex items-start gap-2.5 rounded-lg border border-teal-200 bg-teal-50/70 p-3.5 text-xs text-teal-950">
-        <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-800" />
+        <Sparkles className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-800" />
         <p>
-          <strong>Guardian Account First:</strong> This account belongs to the parent or
-          guardian. You will be able to register and manage one or more student profiles
-          inside your dashboard.
+          <strong>Direct Student Account:</strong> Register once to access all JNVST Class
+          6 mock test series, bilingual question bank (English/Hindi), and virtual OMR
+          simulation.
         </p>
       </div>
 
       <form action={formAction} className="space-y-4">
         <Input
-          label="Guardian Full Name"
+          label="Student Full Name (परीक्षार्थी का पूरा नाम)"
           id="fullName"
           name="fullName"
           type="text"
           required
-          placeholder="e.g. Ramesh Sharma"
+          placeholder="e.g. Aarav Sharma"
           error={state?.fieldErrors?.fullName?.[0]}
         />
 
         <Input
-          label="Email Address (Used for Login)"
+          label="Email Address (Login ID)"
           id="email"
           name="email"
           type="email"
           autoComplete="email"
           required
-          placeholder="e.g. parent@example.com"
+          placeholder="e.g. student@example.com"
           error={state?.fieldErrors?.email?.[0]}
         />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input
-            label="Mobile Number"
+            label="Mobile Number (Optional)"
             id="phoneNumber"
             name="phoneNumber"
             type="tel"
             placeholder="10-digit Indian Mobile"
-            hint="For important exam notifications"
+            hint="For test notifications & OTPs"
             error={state?.fieldErrors?.phoneNumber?.[0]}
           />
 
           <Select
-            label="State / Union Territory"
+            label="State / Union Territory (राज्य)"
             id="state"
             name="state"
             required
@@ -106,23 +106,23 @@ export function SignUpForm() {
 
         <p className="text-xs text-slate-500">
           * Password must be at least 8 characters and include uppercase and numeric
-          characters. Mobile numbers are not permitted as passwords.
+          characters.
         </p>
 
         <Button
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full text-base"
+          className="w-full text-base bg-teal-800 hover:bg-teal-900 text-white font-bold"
           isLoading={isPending}
         >
           <UserPlus className="mr-2 h-4 w-4" />
-          Create Guardian Account
+          Create Student Account
         </Button>
       </form>
 
       <div className="text-center text-xs text-slate-600">
-        Already have a guardian account?{" "}
+        Already have an account?{" "}
         <Link href="/signin" className="font-semibold text-teal-800 hover:underline">
           Sign in here
         </Link>

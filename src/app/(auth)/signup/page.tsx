@@ -4,9 +4,9 @@ import { GraduationCap } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create Guardian Account | ABCD of JNVST",
+  title: "Student Registration | ABCD of JNVST",
   description:
-    "Register a guardian account to enroll students for JNVST Class 6 preparation.",
+    "Register a student account to prepare for JNVST Class 6 entrance examination.",
 };
 
 export default function SignUpPage() {
@@ -17,10 +17,10 @@ export default function SignUpPage() {
           <GraduationCap className="h-6 w-6" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Create Guardian Account
+          Student Registration
         </h1>
         <p className="text-xs text-slate-600">
-          Register as parent or guardian to enroll students into ABCD of JNVST
+          Jawahar Navodaya Vidyalaya Selection Test (Class 6) Preparation Portal
         </p>
       </div>
 

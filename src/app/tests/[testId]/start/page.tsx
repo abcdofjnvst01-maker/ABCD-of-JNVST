@@ -4,7 +4,6 @@ import { notFound, redirect } from "next/navigation";
 import { Clock, HelpCircle, Award, CheckCircle, ArrowLeft, PlayCircle, ShieldCheck } from "lucide-react";
 import { requireUser } from "@/server/authorization";
 import { MockTestService } from "@/server/services/MockTestService";
-import { StudentService } from "@/server/services/StudentService";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { StartTestForm } from "./StartTestForm";
@@ -21,8 +20,6 @@ export default async function TestStartPage({ params }: StartPageProps) {
   if (!test) {
     notFound();
   }
-
-  const students = await StudentService.getStudentsForGuardian(user.id);
 
   return (
     <div className="min-h-screen bg-slate-50 py-8">
@@ -100,9 +97,13 @@ export default async function TestStartPage({ params }: StartPageProps) {
             </div>
           </div>
 
-          {/* Student Selector & Start Action Form */}
+          {/* Direct Candidate & Start Action Form */}
           <div className="mt-8 border-t border-slate-100 pt-6">
-            <StartTestForm testId={test.id} students={students} />
+            <StartTestForm
+              testId={test.id}
+              studentId={user.id}
+              studentName={user.profile?.full_name || "Student"}
+            />
           </div>
         </div>
       </div>

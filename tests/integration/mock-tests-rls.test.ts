@@ -3,11 +3,9 @@ import { Pool, PoolClient } from "pg";
 
 describe("Phase 2: Mock Tests & Attempts Row Level Security (RLS) Tests", () => {
   let pool: Pool;
-  const guardianAId = "11111111-1111-1111-1111-111111111111";
-  const guardianBId = "22222222-2222-2222-2222-222222222222";
+  const studentAId = "11111111-1111-1111-1111-111111111111";
+  const studentBId = "22222222-2222-2222-2222-222222222222";
   const adminId = "99999999-9999-9999-9999-999999999999";
-  const studentAId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
-  const studentBId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
   const testId = "10000000-0000-0000-0000-000000000010";
 
   beforeAll(async () => {
@@ -50,14 +48,14 @@ describe("Phase 2: Mock Tests & Attempts Row Level Security (RLS) Tests", () => 
   }
 
   it("allows any authenticated user to view published mock tests", async () => {
-    await withSession("authenticated", guardianAId, async (client) => {
+    await withSession("authenticated", studentAId, async (client) => {
       const res = await client.query(`SELECT * FROM public.mock_tests WHERE is_published = true;`);
       expect(res.rows.length).toBeGreaterThan(0);
     });
   });
 
   it("prevents non-admins from creating new mock tests", async () => {
-    await withSession("authenticated", guardianAId, async (client) => {
+    await withSession("authenticated", studentAId, async (client) => {
       const newTestId = crypto.randomUUID();
       try {
         await client.query(`
@@ -71,25 +69,25 @@ describe("Phase 2: Mock Tests & Attempts Row Level Security (RLS) Tests", () => 
     });
   });
 
-  it("enforces tenant isolation on test attempts (Guardian A cannot see Guardian B student attempts)", async () => {
+  it("enforces tenant isolation on test attempts (Student A cannot see Student B attempts)", async () => {
     const attemptAId = crypto.randomUUID();
 
-    // 1. Admin/Guardian A creates attempt for Student A
-    await withSession("authenticated", adminId, async (client) => {
+    // 1. Student A creates attempt
+    await withSession("authenticated", studentAId, async (client) => {
       await client.query(`
         INSERT INTO public.test_attempts (id, student_id, test_id, status)
         VALUES ('${attemptAId}', '${studentAId}', '${testId}', 'in_progress');
       `);
     });
 
-    // 2. Guardian A can see their student's attempt
-    await withSession("authenticated", guardianAId, async (client) => {
+    // 2. Student A can see their own attempt
+    await withSession("authenticated", studentAId, async (client) => {
       const res = await client.query(`SELECT * FROM public.test_attempts WHERE id = '${attemptAId}';`);
       expect(res.rows.length).toBe(1);
     });
 
-    // 3. Guardian B CANNOT see Student A's attempt
-    await withSession("authenticated", guardianBId, async (client) => {
+    // 3. Student B CANNOT see Student A's attempt
+    await withSession("authenticated", studentBId, async (client) => {
       const res = await client.query(`SELECT * FROM public.test_attempts WHERE id = '${attemptAId}';`);
       expect(res.rows.length).toBe(0);
     });

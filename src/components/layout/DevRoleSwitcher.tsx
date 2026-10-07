@@ -26,19 +26,19 @@ export function DevRoleSwitcher({ currentRole }: { currentRole?: string }) {
           <form
             action={async () => {
               "use server";
-              await devSwitchUserRole("guardian");
+              await devSwitchUserRole("student");
             }}
           >
             <button
               type="submit"
               className={`inline-flex items-center gap-1 rounded px-2.5 py-1 text-xs transition-colors ${
-                currentRole === "guardian"
+                currentRole === "student" || currentRole === "guardian"
                   ? "bg-teal-700 font-semibold text-white"
                   : "bg-slate-800 text-slate-300 hover:bg-slate-700"
               }`}
             >
               <User className="h-3 w-3" />
-              Switch to Demo Guardian (Ramesh)
+              Switch to Demo Student (Aarav)
             </button>
           </form>
 

@@ -166,41 +166,56 @@ export async function signUpAction(
     }
 
     if (data.user) {
+      // 1. Create direct student profile
       const { error: profError } = await (
-        supabase.from("guardian_profiles") as any
+        supabase.from("student_profiles") as any
       ).insert({
         id: data.user.id,
         full_name: fullName,
         email,
         phone_number: phoneNumber || null,
         state,
+        target_exam_year: 2026,
         created_at: now,
         updated_at: now,
       });
 
       if (profError) {
         console.error(
-          "[signUpAction] Guardian profile creation failed:",
+          "[signUpAction] Student profile creation failed:",
           profError.message
         );
       }
 
+      // 2. Assign student role
       const { error: roleError } = await (
         supabase.from("application_roles") as any
       ).insert({
         user_id: data.user.id,
-        role: "guardian",
+        role: "student",
       });
 
       if (roleError) {
         console.error("[signUpAction] Role assignment failed:", roleError.message);
       }
 
+      // 3. Auto-grant standard access entitlement
+      await (supabase.from("student_entitlements") as any).insert({
+        id: crypto.randomUUID(),
+        student_id: data.user.id,
+        plan_id: "plan-standard-jnvst-500",
+        status: "active",
+        starts_at: now,
+        expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        created_at: now,
+        updated_at: now,
+      });
+
       await AuditService.log({
         actorId: data.user.id,
-        actorRole: "guardian",
-        action: "GUARDIAN_SIGN_UP_COMPLETED",
-        resourceType: "guardian_profiles",
+        actorRole: "student",
+        action: "STUDENT_SIGN_UP_COMPLETED",
+        resourceType: "student_profiles",
         resourceId: data.user.id,
         metadata: { fullName, email, state },
         ipAddress,
@@ -282,7 +297,9 @@ export async function resetPasswordAction(formData: FormData): Promise<ActionRes
   };
 }
 
-export async function devSwitchUserRole(role: "admin" | "guardian"): Promise<void> {
+export async function devSwitchUserRole(
+  role: "admin" | "student" | "guardian"
+): Promise<void> {
   if (process.env.NODE_ENV !== "development") {
     throw new Error(
       "Unauthorized: Dev operations are strictly prohibited outside development environment."
@@ -307,17 +324,18 @@ export async function devSwitchUserRole(role: "admin" | "guardian"): Promise<voi
       { path: "/", httpOnly: true, sameSite: "lax" }
     );
   } else {
-    const guardianId =
-      process.env.DEV_GUARDIAN_ID || "11111111-1111-1111-1111-111111111111";
+    const studentId = "11111111-1111-1111-1111-111111111111";
     cookieStore.set(
       "dev_auth_session",
       encodeURIComponent(
         JSON.stringify({
-          id: guardianId,
-          email: process.env.DEV_GUARDIAN_EMAIL || "guardian@example.com",
-          role: "guardian",
-          name: "Ramesh Sharma",
+          id: studentId,
+          email: "student@abcdjnvst.in",
+          role: "student",
+          name: "Aarav Sharma",
           state: "Rajasthan",
+          district: "Jaipur",
+          targetExamYear: 2026,
         })
       ),
       { path: "/", httpOnly: true, sameSite: "lax" }

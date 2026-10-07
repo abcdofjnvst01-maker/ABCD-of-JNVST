@@ -2,36 +2,27 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { PlayCircle, UserPlus } from "lucide-react";
+import { PlayCircle, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { startTestAttemptAction } from "@/features/tests/actions";
-import type { StudentWithLink } from "@/server/services/StudentService";
 
 interface StartTestFormProps {
   testId: string;
-  students: StudentWithLink[];
+  studentId: string;
+  studentName?: string;
 }
 
-export function StartTestForm({ testId, students }: StartTestFormProps) {
+export function StartTestForm({ testId, studentId, studentName }: StartTestFormProps) {
   const router = useRouter();
-  const [selectedStudentId, setSelectedStudentId] = useState<string>(
-    students[0]?.id || ""
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleStart = async () => {
-    if (!selectedStudentId) {
-      setError("Please select a student profile to begin the test.");
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
     try {
-      const res = await startTestAttemptAction(selectedStudentId, testId);
+      const res = await startTestAttemptAction(studentId, testId);
       if (res.success && res.data?.attemptId) {
         router.push(`/tests/${testId}/attempt/${res.data.attemptId}`);
       } else {
@@ -44,22 +35,6 @@ export function StartTestForm({ testId, students }: StartTestFormProps) {
     }
   };
 
-  if (students.length === 0) {
-    return (
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-center">
-        <p className="text-xs font-semibold text-amber-900 mb-3">
-          No student profile found on this guardian account. Please add a student profile first to take tests.
-        </p>
-        <Link href="/dashboard/students/new">
-          <Button variant="brand" size="sm">
-            <UserPlus className="h-4 w-4 mr-1.5" />
-            Add Student Profile
-          </Button>
-        </Link>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       {error && (
@@ -68,34 +43,31 @@ export function StartTestForm({ testId, students }: StartTestFormProps) {
         </div>
       )}
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex-1 max-w-sm">
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
-            Taking Exam As (परीक्षार्थी चुनें):
-          </label>
-          <select
-            value={selectedStudentId}
-            onChange={(e) => setSelectedStudentId(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-xs focus:border-teal-600 focus:ring-1 focus:ring-teal-600"
-          >
-            {students.map((student) => (
-              <option key={student.id} value={student.id}>
-                {student.full_name} ({student.state}, {student.district}) - Target {student.target_exam_year}
-              </option>
-            ))}
-          </select>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-800 text-white font-bold">
+            <UserCheck className="h-5 w-5" />
+          </div>
+          <div>
+            <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Candidate (परीक्षार्थी)
+            </span>
+            <span className="font-bold text-slate-900 text-sm sm:text-base">
+              {studentName || "Registered Student"}
+            </span>
+          </div>
         </div>
 
-        <div className="pt-2 sm:pt-4">
+        <div>
           <Button
             variant="brand"
             size="lg"
             onClick={handleStart}
             isLoading={isLoading}
-            className="w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-bold"
+            className="w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 shadow-sm"
           >
             <PlayCircle className="h-5 w-5 mr-2" />
-            Launch Test Simulator
+            Launch Test Simulator (परीक्षा शुरू करें)
           </Button>
         </div>
       </div>

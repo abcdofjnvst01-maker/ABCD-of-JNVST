@@ -39,7 +39,7 @@ export function StudentCard({ student }: StudentCardProps) {
   };
 
   const hasActiveEntitlement = student.entitlement?.status === "active";
-  const age = calculateAge(student.date_of_birth);
+  const age = student.date_of_birth ? calculateAge(student.date_of_birth) : "—";
 
   return (
     <Card className="transition-all hover:border-slate-300">
@@ -63,11 +63,11 @@ export function StudentCard({ student }: StudentCardProps) {
             <div className="mt-1 flex flex-wrap items-center gap-4 text-xs text-slate-500">
               <span className="flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                {student.district}, {student.state}
+                {student.district || student.state}, {student.state}
               </span>
               <span className="flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5 text-slate-400" />
-                DOB: {formatDate(student.date_of_birth)} ({age} yrs)
+                DOB: {student.date_of_birth ? formatDate(student.date_of_birth) : "—"} ({age} yrs)
               </span>
             </div>
           </div>

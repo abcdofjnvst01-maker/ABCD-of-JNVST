@@ -47,7 +47,7 @@ export async function Header() {
               </Link>
               <Link href="/signup">
                 <Button variant="primary" size="sm">
-                  Enroll Guardian
+                  Register Student
                 </Button>
               </Link>
             </>

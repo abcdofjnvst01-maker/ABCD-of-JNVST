@@ -391,7 +391,7 @@ export class MockTestService {
 
     await AuditService.log({
       actorId: actorId || attempt.student_id,
-      actorRole: "guardian",
+      actorRole: "student",
       action: "TEST_ATTEMPT_COMPLETED",
       resourceType: "test_attempts",
       resourceId: attemptId,
@@ -400,5 +400,24 @@ export class MockTestService {
     });
 
     return { success: true, result: updatedAttempt as unknown as TestAttemptRecord };
+  }
+
+  static async getAttemptsForStudent(studentId: string): Promise<TestAttemptRecord[]> {
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase
+      .from("test_attempts")
+      .select(`
+        *,
+        test:mock_tests (*)
+      `)
+      .eq("student_id", studentId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("[MockTestService] Error fetching student attempts:", error.message);
+      return [];
+    }
+
+    return (data || []) as unknown as TestAttemptRecord[];
   }
 }
